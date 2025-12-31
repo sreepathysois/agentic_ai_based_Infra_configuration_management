@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  infra-ai:
+    build: .
+    ports:
+      - "8085:8085"
+    env_file:
+      - .env
+    volumes:
+      - ./app/ansible:/app/app/ansible
+    depends_on:
+      - ollama
+
+volumes:
+  ollama:
+
